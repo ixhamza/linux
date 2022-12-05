@@ -192,7 +192,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
 	if (unlikely(!len)) {
 		if (empty)
 			*empty = 1;
-		if (!(flags & LOOKUP_EMPTY)) {
+		if (!(flags & (LOOKUP_EMPTY | O_EMPTY_PATH))) {
 			putname(result);
 			return ERR_PTR(-ENOENT);
 		}
@@ -2347,7 +2347,7 @@ static const char *path_init(struct nameidata *nd, unsigned flags)
 	if ((flags & (LOOKUP_RCU | LOOKUP_CACHED)) == LOOKUP_CACHED)
 		return ERR_PTR(-EAGAIN);
 
-	if (!*s)
+	if (!*s && unlikely(!(flags & O_EMPTY_PATH)))
 		flags &= ~LOOKUP_RCU;
 	if (flags & LOOKUP_RCU)
 		rcu_read_lock();

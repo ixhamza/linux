@@ -1301,7 +1301,7 @@ static long do_sys_openat2(int dfd, const char __user *filename,
 	if (fd)
 		return fd;
 
-	tmp = getname(filename);
+	tmp = getname_flags(filename, how->flags & O_EMPTY_PATH, NULL);
 	if (IS_ERR(tmp))
 		return PTR_ERR(tmp);
 
